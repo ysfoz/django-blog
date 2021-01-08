@@ -45,6 +45,8 @@ def post_detail(request,slug):
 def post_update(request,slug):
     obj = get_object_or_404(Post,slug=slug)
     form = PostForm(request.POST or None,request.FILES or None, instance = obj)
+    if request.user.id != obj.author.id:
+       return redirect('blog:list') 
     if form.is_valid():
         form.save()
         return redirect('blog:list')
@@ -56,6 +58,8 @@ def post_update(request,slug):
 
 def post_delete(request,slug):
     obj = get_object_or_404(Post,slug = slug)
+    if request.user.id != obj.author.id:
+       return redirect('blog:list') 
     if request.method == 'POST':
         obj.delete()
         return redirect('blog:list')
